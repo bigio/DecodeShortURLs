@@ -446,7 +446,7 @@ sub recursive_lookup {
 
   # At this point we have a new URL in $response
   $pms->got_hit('HAS_SHORT_URL');
-  $self->_add_uri_detail_list($pms, $location);
+  $pms->add_uri_detail_list($location);
 
   # Set chained here otherwise we might mark a disabled page or 
   # redirect back to the same host as chaining incorrectly. 
@@ -458,7 +458,7 @@ sub recursive_lookup {
     my($host) = ($short_url =~ /^(https?:\/\/\S+)\//);
     $location = "$host/$location";
     dbg("Looks like a local redirection: $short_url => $location");
-    $self->_add_uri_detail_list($pms, $location);
+    $pms->add_uri_detail_list($location);
     return $location;
   }
 
@@ -485,41 +485,6 @@ sub recursive_lookup {
 sub short_url_tests {
   # Set by parsed_metadata
   return 0;
-}
-
-# Beware.  Code copied from PerMsgStatus get_uri_detail_list().
-# Stolen from GUDO.pm
-sub _add_uri_detail_list {
-  my ($self, $pms, $uri) = @_;
-  my $info;
-
-  # Cache of text parsed URIs, as previously used by get_uri_detail_list().
-  push @{$pms->{parsed_uri_list}}, $uri;
-
-  $info->{types}->{parsed} = 1;
-
-  $info->{cleaned} =
-    [Mail::SpamAssassin::Util::uri_list_canonify (undef, $uri)];
-
-  foreach (@{$info->{cleaned}}) {
-    my ($dom, $host) = $self->{main}->{registryboundaries}->uri_to_domain($_);
-
-    if ($dom && !$info->{domains}->{$dom}) {
-      # 3.4 compatibility as per Marc Martinec
-      if ($host) {
-          $info->{hosts}->{$host} = $dom;
-      }
-      $info->{domains}->{$dom} = 1;
-      $pms->{uri_domain_count}++;
-    }
-  }
-
-  $pms->{uri_detail_list}->{$uri} = $info;
-
-  # And of course, copied code from PerMsgStatus get_uri_list().  *sigh*
-  dbg ('warn: PMS::get_uri_list() appears to have been harvested'),
-    push @{$pms->{uri_list}}, @{$info->{cleaned}}
-    if exists $pms->{uri_list};
 }
 
 sub log_to_file {
