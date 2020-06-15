@@ -1,6 +1,3 @@
-NOTE:  this plugin is be merged into SpamAssassin, so it will no longer be updated here.
-========================================================================================
-
 DecodeShortURLs
 ===============
 
