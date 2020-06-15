@@ -46,14 +46,3 @@ runs as priority 0.
 
 Currently the plugin queries a maximum of 10 distinct shortened URLs with
 a maximum timeout of 5 seconds per lookup.  
-
-ACKNOWLEDGEMENTS
-----------------
-
-A lot of this plugin has been hacked together by using other plugins as 
-examples.  The author would particularly like to tip his hat to Karsten
-Bräckelmann for the _add_uri_detail_list() function that he stole from
-GUDO.pm for which this plugin would not be possible due to the SpamAssassin
-API making no provision for adding to the base list of extracted URIs and 
-the author not knowing enough about Perl to be able to achieve this without 
-a good example from someone that does ;-)
