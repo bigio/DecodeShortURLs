@@ -49,7 +49,7 @@ problem reports.
 As of version 0.3 this plug-in will follow 'chained' shorteners e.g.
 
 
-short URL -> short URL -> short URL -> real URL
+short URL -E<gt> short URL -E<gt> short URL -E<gt> real URL
 
 
 If this form of chaining is found, then the rule 'SHORT_URL_CHAINED' will be
@@ -61,7 +61,7 @@ If a shortener returns a '404 Not Found' result for the short URL then the
 rule 'SHORT_URL_404' will be fired.
 
 If a shortener does not return an HTTP redirect, then a dynamic rule will
-be fired: 'SHORT_<SHORTENER>_<CODE>' where <SHORTENER> is the uppercase
+be fired: C<E<lt>SHORT_E<lt>SHORTENERE<gt>_E<lt>CODEE<lt>> where C<E<lt>SHORTENERE<gt>> is the uppercase
 name of the shortener with dots converted to underscores.  e.g.:
 'SHORT_T_CO_200' This is to handle the case of t.co which now returns an 
 HTTP 200 and an abuse page instead of redirecting to an abuse page like
@@ -75,16 +75,6 @@ runs as priority 0.
 
 Currently the plugin queries a maximum of 10 distinct shortened URLs with
 a maximum timeout of 5 seconds per lookup.
-
-=head1 ACKNOWLEDGEMENTS
-
-A lot of this plugin has been hacked together by using other plugins as 
-examples.  The author would particularly like to tip his hat to Karsten
-Bräckelmann for the _add_uri_detail_list() function that he stole from
-GUDO.pm for which this plugin would not be possible due to the SpamAssassin
-API making no provision for adding to the base list of extracted URIs and 
-the author not knowing enough about Perl to be able to achieve this without 
-a good example from someone that does ;-)
 
 =cut
 
@@ -159,8 +149,6 @@ sub set_config {
     }
   });
 
-=cut
-
 =head1 PRIVILEGED SETTINGS
 
 =over 4
@@ -171,7 +159,9 @@ A path to a log file to be written to.  The file will be created if it does
 not already exist and must be writable by the user running spamassassin.
 
 For each short URL found the following will be written to the log file:
-[unix_epoch_time] <short url> => <decoded url>
+[unix_epoch_time] C<short url> =E<gt> C<decoded url>
+
+=back
 
 =cut
 
@@ -181,6 +171,8 @@ For each short URL found the following will be written to the log file:
     is_priv => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING
   });
+
+=over 4
 
 =item url_shortener_cache		(default: none)
 
@@ -195,6 +187,8 @@ Example:
 
 url_shortener_cache /tmp/DecodeShortURLs.sq3
 
+=back
+
 =cut
 
 
@@ -205,6 +199,8 @@ url_shortener_cache /tmp/DecodeShortURLs.sq3
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING
   });
 
+=over 4
+
 =item url_shortener_cache_ttl		(default: 86400)
 
 The length of time a cache entry will be valid for in seconds.
@@ -214,10 +210,12 @@ Default is 86400 (1 day).
 NOTE: you will also need to run the following via cron to actually remove the
 records from the database:
 
-echo "DELETE FROM short_url_cache WHERE modified < strftime('%s',now) - <ttl>; | sqlite3 /path/to/database"
+echo "DELETE FROM short_url_cache WHERE modified E<lt> strftime('%s',now) - E<lt>ttlE<gt>; | sqlite3 /path/to/database"
 
 
-NOTE: replace <ttl> above with the same value you use for this option
+NOTE: replace E<lt>ttlE<gt> above with the same value you use for this option
+
+=back
 
 =cut
 
@@ -228,12 +226,15 @@ NOTE: replace <ttl> above with the same value you use for this option
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_NUMERIC
   });
 
+=over 4
+
 =item url_shortener_syslog           (default: 0 (off))
 
 If this option is enabled (set to 1), then short URLs and the decoded URLs will be logged to syslog (mail.info).
 
-=cut
+=back
 
+=cut
 
   push (@cmds, {
     setting => 'url_shortener_syslog',
